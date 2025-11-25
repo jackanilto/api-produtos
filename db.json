@@ -1,0 +1,22 @@
+{
+    "produtos": [
+        {
+            "id": "1",
+            "nome": "Macarrao",
+            "preco": 50,
+            "estoque": 5
+        },
+        {
+            "id": "2e716f3d-d12d-43ac-8efb-533209a45560",
+            "nome": "Bata Doce",
+            "preco": "15",
+            "estoque": 20
+        },
+        {
+            "id": "0f14d775-fd56-4945-8a5a-be51d758619d",
+            "nome": "Bata Doce",
+            "preco": "15",
+            "estoque": 20
+        }
+    ]
+}
