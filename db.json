@@ -7,16 +7,28 @@
             "estoque": 5
         },
         {
-            "id": "2e716f3d-d12d-43ac-8efb-533209a45560",
-            "nome": "Bata Doce",
-            "preco": "15",
-            "estoque": 20
+            "id": "09afc01f-2179-41e6-ba37-578b169e8431",
+            "nome": "Acucar",
+            "preco": "41",
+            "estoque": 36
         },
         {
-            "id": "0f14d775-fd56-4945-8a5a-be51d758619d",
-            "nome": "Bata Doce",
-            "preco": "15",
-            "estoque": 20
+            "id": "939881b6-f806-4e9d-acf9-7732efcc6418",
+            "nome": "Acucar",
+            "preco": "41",
+            "estoque": 36
+        },
+        {
+            "id": "a732de63-0984-4f80-93d7-cf17909b63ee",
+            "nome": "Pera",
+            "preco": "4",
+            "estoque": 36
+        },
+        {
+            "id": "93a5e140-483c-49c5-a522-e139a5f349f6",
+            "nome": "agua",
+            "preco": "5",
+            "estoque": 3
         }
     ]
 }

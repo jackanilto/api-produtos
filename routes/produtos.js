@@ -54,7 +54,7 @@ export async function produtosRoutes(fastify, opts) {
     const produtos = produtos.find(p => String(p.id) == request.params.id)
 
     if (!pet) {
-      return response.code(404).send({ error: 'Produto não encontrado!' })
+      return response.code(404).send({ error: 'Altera Produto!' })
     }
 
     Object.assign(produtos, request.body)
@@ -81,14 +81,10 @@ export async function produtosRoutes(fastify, opts) {
 
   fastify.delete('/:id', function (request, response) {
     const index = produtos.findIndex(p => String(p.id) == request.params.id)
-
     if (index === -1) {
       return response.code(404).send({ error: 'Produto nao encontrado!' })
     }
-
     produtos.splice(index, 1)
-    //npm install --save-dev nodemon
-
     saveToDB()
 
     response.code(200).send({ message: 'Resource deleted' })
