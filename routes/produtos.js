@@ -14,12 +14,18 @@ export async function produtosRoutes(fastify, opts) {
     }
   }
 
-  // LISTAR TODOS
-  fastify.get('/', (request, response) => {
-    response.send(produtos)
-  })
+  // LISTAR COM FILTRO DE NOME
+  fastify.get('/', (request, reply) => {
+  const { nome } = request.query
 
-
+  if (nome) {
+    const filtrados = produtos.filter(p => 
+      p.nome.toLowerCase().includes(nome.toLowerCase())
+    )
+    return reply.send(filtrados)
+  }
+  reply.send(produtos)
+})
 
   // LISTAR POR ID
   fastify.get('/:id', (request, response) => {

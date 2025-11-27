@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Produtos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="header">
+    <h1>🔍 Consulta de Produtos</h1>
+    <nav>
+      <a href="index.html">Cadastro</a>
+      <a href="consulta.html">Consultar</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2>Buscar Produto por Nome</h2>
+
+    <input type="text" id="busca" placeholder="Digite o nome..." />
+    <button id="btnBuscar">Buscar</button>
+
+    <h2>Resultado</h2>
+    <ul id="resultado"></ul>
+
+  </main>
+
+  <footer class="footer">
+    <p>&copy; <span id="ano"></span> - Todos os direitos reservados.</p>
+  </footer>
+
+  <script src="consulta.js"></script>
+
+  <script>
+    document.getElementById('ano').textContent = new Date().getFullYear();
+  </script>
+
+</body>
+</html>
