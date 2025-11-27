@@ -7,28 +7,22 @@
             "estoque": 5
         },
         {
-            "id": "09afc01f-2179-41e6-ba37-578b169e8431",
+            "id": "2",
             "nome": "Acucar",
             "preco": "41",
             "estoque": 36
         },
         {
-            "id": "939881b6-f806-4e9d-acf9-7732efcc6418",
+            "id": "3",
             "nome": "Acucar",
             "preco": "41",
             "estoque": 36
         },
         {
-            "id": "a732de63-0984-4f80-93d7-cf17909b63ee",
-            "nome": "Pera",
-            "preco": "4",
-            "estoque": 36
-        },
-        {
-            "id": "93a5e140-483c-49c5-a522-e139a5f349f6",
-            "nome": "agua",
-            "preco": "5",
-            "estoque": 3
+            "id": "4e539965-5655-4849-bb41-eb25a73b211b",
+            "nome": "Abacate",
+            "preco": "11",
+            "estoque": 9
         }
     ]
 }

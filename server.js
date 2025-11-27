@@ -50,8 +50,8 @@ fastify.register(produtosRoutes, {
 
 fastify.listen({ port: process.env.PORT ?? 3000 })
     .then((address) => {
-        console.log(`🚀 Server Running: ${address}`);
-        console.log(`📘 Swagger Docs: ${address}/docs`);
+        console.log(`Server Running: ${address}`);
+        console.log(`Swagger Docs: ${address}/docs`);
     })
     .catch((err) => {
         console.error(err);

@@ -14,79 +14,123 @@ export async function produtosRoutes(fastify, opts) {
     }
   }
 
-  fastify.get('/', function (request, response) {
+  // LISTAR TODOS
+  fastify.get('/', (request, response) => {
     response.send(produtos)
   })
 
-  fastify.get('/:id', function (request, response) {
-    const pet = produtos.find(p => String(p.id) == request.params.id)
 
-    pet ? response.send(pet) : response.code(404).send({ error: 'Produto nao existe!' })
+
+  // LISTAR POR ID
+  fastify.get('/:id', (request, response) => {
+    const produto = produtos.find(p => p.id == request.params.id)
+
+    produto
+      ? response.send(produto)
+      : response.code(404).send({ error: 'Produto não existe!' })
   })
 
-  fastify.post('/', {
-    schema: {
-      description: 'cadastra Produto',
-      tags: ['Produtos'],
-      body: {
-        type: 'object',
-        required: ['nome', 'preco', 'estoque'],
-        properties: {
-          nome: { type: 'string' },
-          preco: { type: 'string' },
-          estoque: { type: 'integer' }
-        }
+// CADASTRAR
+fastify.post('/', {
+  schema: {
+    description: 'Cadastra Produto',
+    tags: ['Produtos'],
+    body: {
+      type: 'object',
+      required: ['nome', 'preco', 'estoque'],
+      properties: {
+        nome: { type: 'string' },
+        preco: { type: 'string' },
+        estoque: { type: 'integer' }
       }
     },
     response: {
       201: produtosSchema
     }
-  }, function (request, response) {
-    const newProdutos = { id: v4(), ...request.body }
+  }
+}, (request, response) => {
 
-    produtos.push(newProdutos)
-    saveToDB()
-    response.code(201).send(newProdutos)
+  const novoProduto = { id: v4(), ...request.body }
 
-  })
+  // VALIDAÇÃO SIMPLES DE DADOS
+  if (Number(novoProduto.preco) <= 0) {
+    return response.code(400).send({ error: 'O preço inválido.' })
+  }
 
-  fastify.patch('/:id', function (request, response) {
-    const produtos = produtos.find(p => String(p.id) == request.params.id)
+  // SALVAR PRODUTO
+  produtos.push(novoProduto)
+  saveToDB()
 
-    if (!pet) {
-      return response.code(404).send({ error: 'Altera Produto!' })
+  response.code(201).send(novoProduto)
+})
+
+  // EDITAR PARCIAL (PATCH)
+  fastify.patch('/:id', 
+    (request, response) => { const produto = produtos.find(p => p.id == request.params.id)
+
+    if (!produto) {
+      return response.code(404).send({ error: 'Produto não encontrado!' })
     }
 
-    Object.assign(produtos, request.body)
+    Object.assign(produto, request.body)
 
     saveToDB()
-    response.code(202).send(pet)
 
+    response.code(202).send(produto)
   })
 
-  fastify.put('/:id', function (request, response) {
-    const index = produtos.findIndex(p => String(p.id) == request.params.id)
+  // EDITAR TOTAL (PUT)
+  fastify.put('/:id', (request, response) => { const index = produtos.findIndex(p => p.id == request.params.id)
 
     if (index === -1) {
-      return response.code(404).send({ error: 'Produto nao encontrado!' })
+      return response.code(404).send({ error: 'Produto não encontrado!' })
     }
 
-    pets[index] = { id: request.params.id, ...request.body }
+    produtos[index] = { id: request.params.id, ...request.body }
 
     saveToDB()
 
-    response.code(200).send(pets[index])
-
+    response.code(200).send(produtos[index])
   })
 
-  fastify.delete('/:id', function (request, response) {
-    const index = produtos.findIndex(p => String(p.id) == request.params.id)
+  // DELETAR
+  fastify.delete('/:id', (request, response) => {
+    const index = produtos.findIndex(p => p.id == request.params.id)
+
     if (index === -1) {
-      return response.code(404).send({ error: 'Produto nao encontrado!' })
+      return response.code(404).send({ error: 'Produto não encontrado!' })
     }
+
     produtos.splice(index, 1)
     saveToDB()
 
-    response.code(200).send({ message: 'Resource deleted' })
+    response.code(200).send({ message: 'Produto deletado com sucesso.' })
   })
+
+
+  // 🔍 CONSULTA POR PREÇO
+  fastify.get('/preco/:valor', (request, response) => {
+    const valor = Number(request.params.valor)
+
+    const filtrados = produtos.filter(p => Number(p.preco) === valor)
+
+    if (filtrados.length === 0) {
+      return response.code(404).send({ error: 'Nenhum produto encontrado com esse preço.' })
+    }
+    response.send(filtrados)
+  })
+
+
+  // 🔍 CONSULTA POR NOME
+  fastify.get('/nome/:nome', (request, response) => {
+    const nome = request.params.nome.toLowerCase()
+    const filtrados = produtos.filter(p => p.nome.toLowerCase().includes(nome))
+
+    if (filtrados.length === 0) {
+      return response.code(404).send({ error: 'Nenhum produto encontrado com esse nome.' })
+    }
+    response.send(filtrados)
+  })  
+
+
 }

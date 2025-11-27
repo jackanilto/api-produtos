@@ -1,0 +1,79 @@
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* TELA */
+html, body {
+  height: 100%;
+  background: #f5f5f5;
+  font-family: Arial, sans-serif;
+}
+
+/* HEADER FIXO */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: #333;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+}
+
+.header nav a {
+  color: #fff;
+  margin-left: 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.header nav a:hover {
+  text-decoration: underline;
+}
+
+/* ÁREA PRINCIPAL – espaço para header fixo */
+.container {
+  padding: 120px 30px 70px; /* topo 120px / lateral 30px / bottom 70px */
+}
+
+/* TITULOS */
+h1, h2 {
+  color: #333;
+}
+
+/* FORMULÁRIO */
+form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+form input {
+  padding: 8px;
+  font-size: 14px;
+}
+
+button {
+  padding: 8px 15px;
+  cursor: pointer;
+}
+
+/* FOOTER FIXO NO FINAL */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  z-index: 999;
+}
