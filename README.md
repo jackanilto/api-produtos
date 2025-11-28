@@ -1,73 +1,223 @@
-# api-produtos
+📦 API-Produtos
 
-API REST simples para gerenciamento de produtos — construída como exercício no curso Senai / Firjan.
+API REST para gerenciamento simples de produtos.
+Feita em Node.js + Fastify, utilizando um arquivo JSON como armazenamento.
 
-## 🛠️ O que é este projeto
+🔰 1. Como criar este projeto do zero
 
-Este projeto implementa uma API básica para criação, leitura, atualização e deleção (CRUD) de produtos. A ideia é permitir que um cliente consuma os endpoints para gerenciar um catálogo de produtos de forma programática (via JSON/HTTP).
+Este guia mostra exatamente como você pode recriar o projeto do zero, caso queira repetir o processo.
 
-## 📁 Estrutura do projeto
-
-- `server.js` — ponto de entrada da aplicação.  
-- `routes/` — pasta com as rotas/endpoints da API.  
-- `.env.example` — exemplo de configuração de variáveis de ambiente.  
-- `db.json` — banco de dados em JSON (para simulação / persistência leve).  
-- `package.json` / `package-lock.json` — dependências e scripts do Node.js.
-
-## 🚀 Como executar localmente
-
-1. Clone o repositório  
-   ```bash
-   git clone https://github.com/jackanilto/api-produtos.git
-Acesse a pasta do projeto
-
-bash
-Copiar código
+📌 1.1 Criar a pasta do projeto
+mkdir api-produtos
 cd api-produtos
-Instale as dependências
 
-bash
-Copiar código
+📌 1.2 Iniciar o Node.js
+npm init -y
+
+
+Isso criará o arquivo package.json.
+
+📌 1.3 Instalar dependências necessárias
+npm install fastify @fastify/cors @fastify/swagger @fastify/swagger-ui dotenv uuid
+
+
+E o nodemon (somente para desenvolvimento):
+
+npm install nodemon -D
+
+📌 1.4 Criar a estrutura básica
+/api-produtos
+ ├─ server.js
+ ├─ routes/
+ │   └─ produtos.js
+ ├─ db.json
+ ├─ .env
+ └─ package.json
+
+📌 1.5 Criar o arquivo db.json
+[]
+
+📌 1.6 Criar o servidor (server.js)
+import Fastify from "fastify";
+import cors from "@fastify/cors";
+import dotenv from "dotenv";
+import { produtosRoutes } from "./routes/produtos.js";
+import fs from "fs";
+
+dotenv.config();
+
+const fastify = Fastify({ logger: true });
+
+fastify.register(cors);
+
+// Carregar o DB JSON
+let produtos = JSON.parse(fs.readFileSync("./db.json", "utf8"));
+
+// Função para salvar no "banco"
+function saveToDB() {
+  fs.writeFileSync("./db.json", JSON.stringify(produtos, null, 2));
+}
+
+// Rotas
+fastify.register(produtosRoutes, { prefix: "/produtos", produtos, saveToDB });
+
+// Porta
+const PORT = process.env.PORT || 3000;
+
+fastify.listen({ port: PORT }, () => {
+  console.log(`🚀 Servidor rodando em http://localhost:${PORT}`);
+});
+
+📌 1.7 Criar as rotas (routes/produtos.js)
+import { v4 } from "uuid";
+
+export async function produtosRoutes(fastify, opts) {
+  const { produtos, saveToDB } = opts;
+
+  // Listar todos
+  fastify.get("/", () => produtos);
+
+  // Buscar por ID
+  fastify.get("/:id", (req, reply) => {
+    const produto = produtos.find((p) => p.id === req.params.id);
+
+    if (!produto)
+      return reply.code(404).send({ error: "Produto não encontrado" });
+
+    return produto;
+  });
+
+  // Criar
+  fastify.post("/", (req, reply) => {
+    const novoProduto = { id: v4(), ...req.body };
+
+    // Validação simples
+    if (novoProduto.preco <= 0) {
+      return reply.code(400).send({ error: "Preço inválido!" });
+    }
+
+    produtos.push(novoProduto);
+    saveToDB();
+
+    reply.code(201).send(novoProduto);
+  });
+
+  // Atualizar (PUT)
+  fastify.put("/:id", (req, reply) => {
+    const i = produtos.findIndex((p) => p.id === req.params.id);
+    if (i === -1)
+      return reply.code(404).send({ error: "Produto não encontrado" });
+
+    produtos[i] = { id: req.params.id, ...req.body };
+    saveToDB();
+
+    reply.send(produtos[i]);
+  });
+
+  // Atualização parcial (PATCH)
+  fastify.patch("/:id", (req, reply) => {
+    const produto = produtos.find((p) => p.id === req.params.id);
+    if (!produto)
+      return reply.code(404).send({ error: "Produto não encontrado" });
+
+    Object.assign(produto, req.body);
+    saveToDB();
+
+    reply.send(produto);
+  });
+
+  // Deletar
+  fastify.delete("/:id", (req, reply) => {
+    const i = produtos.findIndex((p) => p.id === req.params.id);
+    if (i === -1)
+      return reply.code(404).send({ error: "Produto não encontrado" });
+
+    produtos.splice(i, 1);
+    saveToDB();
+
+    reply.send({ message: "Produto removido" });
+  });
+}
+
+📌 1.8 Ajustar o package.json
+"scripts": {
+  "dev": "nodemon server.js",
+  "start": "node server.js"
+}
+
+
+Agora você roda o servidor com:
+
+npm run dev
+
+🚀 2. Como rodar este repositório
+
+Se você clonou o repositório, basta:
+
+git clone https://github.com/jackanilto/api-produtos
+cd api-produtos
 npm install
-Crie um arquivo .env baseado no .env.example (caso necessário).
+npm run dev
 
-Inicie o servidor
 
-bash
-Copiar código
-npm start
-A API estará disponível, por exemplo, em http://localhost:3000/ (dependendo da configuração).
+API disponível em:
 
-📦 Endpoints disponíveis (exemplos)
-Método	Rota	Descrição
-GET	/produtos	Retorna todos os produtos
-GET	/produtos/:id	Retorna produto por ID
-POST	/produtos	Cria um novo produto
-PUT	/produtos/:id	Atualiza produto existente
-DELETE	/produtos/:id	Remove produto por ID
+http://localhost:3000/produtos
 
-⚠️ Se a estrutura da sua API for diferente, ajuste as rotas conforme o código existente.
+📚 3. Endpoints da API
+✔ GET /produtos
 
-✨ Tecnologias usadas
+Retorna todos os produtos.
+
+✔ GET /produtos/:id
+
+Retorna um produto via ID.
+
+✔ POST /produtos
+
+Cria um novo produto.
+Exemplo:
+
+{
+  "nome": "Mouse Gamer",
+  "preco": 150,
+  "estoque": 30
+}
+
+✔ PUT /produtos/:id
+
+Atualiza todos os dados de um produto.
+
+✔ PATCH /produtos/:id
+
+Atualiza apenas um campo.
+
+✔ DELETE /produtos/:id
+
+Remove um produto.
+
+🛠 Tecnologias utilizadas
+
 Node.js
 
-Express (presumido, se estiver usando)
+Fastify
 
-JSON como banco de dados (via db.json) — ideal para protótipos ou demonstrações
+CORS
 
-🔧 Possíveis melhorias / planos futuros
-Substituir o armazenamento por JSON por um banco real (SQL, NoSQL etc.).
+UUID
 
-Adicionar validações e tratamento de erros mais robusto.
+Persistência local com JSON
 
-Incluir documentação automática (ex: com Swagger / OpenAPI).
+Dotenv
 
-Adicionar testes automatizados.
+✨ Melhorias futuras
 
-Autenticação e controle de acesso (caso a API seja usada em produção).
+Banco de dados real (SQLite, PostgreSQL, MongoDB etc.)
 
-📄 Licença
-Este projeto está disponível sob a licença MIT — sinta-se livre para usar, modificar e distribuir.
+Autenticação JWT
 
-🙏 Créditos
-Desenvolvido por jackanilto como parte da Aula de API do Senai/Firjan.
+Testes automatizados
+
+Frontend integrado
+
+Swagger para documentação
