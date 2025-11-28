@@ -27,11 +27,17 @@ npm install nodemon -D
 
 📌 1.4 Criar a estrutura básica
 /api-produtos
+
  ├─ server.js
+ 
  ├─ routes/
+ 
  │   └─ produtos.js
+ 
  ├─ db.json
+ 
  ├─ .env
+ 
  └─ package.json
 
 📌 1.5 Criar o arquivo db.json
